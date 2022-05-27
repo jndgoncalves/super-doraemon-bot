@@ -17,4 +17,9 @@ export class GuildConfiguration {
     @Column({ name: 'welcome_channel_id', nullable: true })
     welcomeChannelId: string;
 
+    @Column({ name: 'guild_name' })
+    guildName: string;
+
+    @Column({ name: 'created_at' })
+    createdAt: string;
 }
