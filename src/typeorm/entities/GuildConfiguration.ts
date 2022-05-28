@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity({ name: "guild_configurations" })
 export class GuildConfiguration {
 
-    //strictPropertyInitialization: false on tsconfig.json  instead of "id!: number" to fix linter error
+    //strictPropertyInitialization: false on tsconfig.json, could use "id!: number" to fix linter error tho
     @PrimaryGeneratedColumn()
     id: number;
 

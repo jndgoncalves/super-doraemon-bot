@@ -4,28 +4,35 @@ import { registerCommands, registerEvents } from './utils/registry';
 import config from '../slappey.json';
 import DiscordClient from './client/client';
 import { Collection, Intents } from 'discord.js';
-import { createConnection, getRepository } from 'typeorm';
+import { createConnection, DataSource, getRepository } from 'typeorm';
 import { GuildConfiguration } from './typeorm/entities/GuildConfiguration';
 const client = new DiscordClient({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-(async () => {
-  await createConnection({
-    type: 'mysql',
-    host: process.env.MYSQL_DB_HOST,
-    port: 3306,
-    username: process.env.MYSQL_DB_USERNAME,
-    password: process.env.MYSQL_DB_PASSWORD,
-    database: process.env.MYSQL_DB_DATABASE,
-    //only true in development, updates entities on every request
-    synchronize: true,
-    entities: [GuildConfiguration],
-  });
+
+export const dataSource = new DataSource({
+  type: 'mysql',
+  host: process.env.MYSQL_DB_HOST,
+  port: 3306,
+  username: process.env.MYSQL_DB_USERNAME,
+  password: process.env.MYSQL_DB_PASSWORD,
+  database: process.env.MYSQL_DB_DATABASE,
+  //only true in development, updates entities on every request
+  synchronize: true,
+  entities: [GuildConfiguration],
+});
+
+
+dataSource.initialize().then(async () => {
+
+  /* console.log(dataSource, 'dataSource'); */
+
 
   /* client.prefix = config.prefix || client.prefix; */
 
   //saving all configs in memory to not have to query the database every time
-  const configRepo = getRepository(GuildConfiguration);
+  const configRepo = dataSource.getRepository(GuildConfiguration);
   const guildConfig = await configRepo.find();
+  console.log(guildConfig, 'guildConfig');
   const configs = new Collection<string, GuildConfiguration>();
 
   guildConfig.forEach((config) => {
@@ -33,9 +40,9 @@ const client = new DiscordClient({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS
   });
 
   client.configs = configs;
-  console.log(client.configs);
+  console.log(client.configs, 'client.configs');
 
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
   await client.login(process.env.BOT_TOKEN);
-})();
+}).catch((err) => console.log(err));
