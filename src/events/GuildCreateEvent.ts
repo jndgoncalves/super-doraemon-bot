@@ -23,7 +23,8 @@ export default class GuildCreateEvent extends BaseEvent {
 
     if (config) {
       console.log('A configuration was found!');
-
+      //add new config to client configs so that it is avaiable when the bot is added to a new guild
+      client.configs.set(guild.id, config);
     } else {
       console.log('No configuration was found! Creating one...');
 
@@ -33,8 +34,11 @@ export default class GuildCreateEvent extends BaseEvent {
         createdAt: new Date().toISOString(),
       });
 
-      //const oldConfig = await this.guildConfigRepository.save(newConfig);
-      return this.guildConfigRepository.save(newConfig);
+      //await so that the config is in the database before is added to the client configs
+      const savedConfig = await this.guildConfigRepository.save(newConfig);
+      client.configs.set(guild.id, savedConfig);
+
+      console.log(client.configs, 'configs guildcreate');
     }
   }
 } 
