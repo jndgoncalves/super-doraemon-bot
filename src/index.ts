@@ -1,13 +1,11 @@
 require('dotenv').config();
 import 'reflect-metadata';
 import { registerCommands, registerEvents } from './utils/registry';
-import config from '../slappey.json';
 import DiscordClient from './client/client';
 import { Collection, Intents } from 'discord.js';
-import { createConnection, DataSource, getRepository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { GuildConfiguration } from './typeorm/entities/GuildConfiguration';
 const client = new DiscordClient({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-
 
 export const dataSource = new DataSource({
   type: 'mysql',
@@ -21,14 +19,7 @@ export const dataSource = new DataSource({
   entities: [GuildConfiguration],
 });
 
-
 dataSource.initialize().then(async () => {
-
-  /* console.log(dataSource, 'dataSource'); */
-
-
-  /* client.prefix = config.prefix || client.prefix; */
-
   //saving all configs in memory to not have to query the database every time
   const configRepo = dataSource.getRepository(GuildConfiguration);
   const guildConfig = await configRepo.find();
@@ -38,7 +29,6 @@ dataSource.initialize().then(async () => {
   guildConfig.forEach((config) => {
     configs.set(config.guildId, config);
   });
-
   client.configs = configs;
   console.log(client.configs, 'client.configs');
 

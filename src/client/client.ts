@@ -17,14 +17,10 @@ export default class DiscordClient extends Client {
   get commands(): Collection<string, BaseCommand> { return this._commands; }
   get events(): Collection<string, BaseEvent> { return this._events; }
   get prefix(): string { return this._prefix; }
-  get configs() { return this._configs;}
+  get configs() { return this._configs; }
 
   set prefix(prefix: string) { this._prefix = prefix; }
   set configs(guildConfigs: Collection<string, GuildConfiguration>) {
     this._configs = guildConfigs;
   }
-
-
-
-
 }

@@ -11,13 +11,10 @@ export default class MessageEvent extends BaseEvent {
     if (message.author.bot) return;
 
     const config = client.configs.get(message.guildId!);
-    console.log(config, 'config message event');
-
     if (!config) {
       message.channel.send('No config found for this guild');
       return;
     };
-
 
     if (message.content.startsWith(config.prefix)) {
       const [cmdName, ...cmdArgs] = message.content
