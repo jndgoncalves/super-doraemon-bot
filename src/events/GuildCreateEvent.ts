@@ -26,13 +26,13 @@ export default class GuildCreateEvent extends BaseEvent {
       console.log('No configuration was found! Creating one...');
       const newConfig = this.guildConfigRepository.create({
         guildId: guild.id,
+        welcomeChannelId: '979126846773923854', //remove
         guildName: guild.name,
         createdAt: new Date().toISOString(),
       });
       //await so that the config is in the database before is added to the client configs
       const savedConfig = await this.guildConfigRepository.save(newConfig);
       client.configs.set(guild.id, savedConfig);
-      console.log(client.configs, 'configs guildcreate');
     }
   }
 } 

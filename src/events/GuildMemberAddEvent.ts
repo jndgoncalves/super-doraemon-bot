@@ -11,7 +11,6 @@ export default class GuildMemberAddEvent extends BaseEvent {
   async run(client: DiscordClient, member: GuildMember) {
     console.log('Welcome to the server,', member.user.tag);
     const config = client.configs.get(member.guild.id);
-    console.log(config, 'config');
     if (!config) return;
     if (config.welcomeChannelId) {
       const channel = member.guild.channels.cache.get(config.welcomeChannelId) as TextChannel;

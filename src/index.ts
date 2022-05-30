@@ -10,7 +10,8 @@ const client = new DiscordClient({
     [
       Intents.FLAGS.GUILDS,
       Intents.FLAGS.GUILD_MESSAGES,
-      Intents.FLAGS.GUILD_MEMBERS
+      Intents.FLAGS.GUILD_MEMBERS,
+      Intents.FLAGS.GUILD_VOICE_STATES
     ]
 });
 
@@ -30,15 +31,12 @@ dataSource.initialize().then(async () => {
   //saving all configs in memory to not have to query the database every time
   const configRepo = dataSource.getRepository(GuildConfiguration);
   const guildConfig = await configRepo.find();
-  console.log(guildConfig, 'guildConfig');
   const configs = new Collection<string, GuildConfiguration>();
 
   guildConfig.forEach((config) => {
     configs.set(config.guildId, config);
   });
   client.configs = configs;
-  console.log(client.configs, 'client.configs');
-
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
   await client.login(process.env.BOT_TOKEN);
